@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://hotelmanagementsystem-z81c.onrender.com',
+        target: 'https://hotelmanagementsystem-z81c.onrender.com/api',
         changeOrigin: true,
       }
     }
