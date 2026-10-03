@@ -4,6 +4,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # VITE_BACKEND_URL is a public API URL that Vite intentionally inlines into the
+  # client bundle, so it is not a secret and should not fail secrets scanning.
+  SECRETS_SCAN_OMIT_KEYS = "VITE_BACKEND_URL"
 
 # Proxy API calls to the backend (used when VITE_BACKEND_URL is not set)
 [[redirects]]
