@@ -92,8 +92,8 @@ export default function AdminBookingsPage() {
                       </div>
                     </td>
                     <td className="px-5 py-4 text-slate-600 whitespace-nowrap">Rm {b.room?.roomNumber} <span className="text-slate-400">({b.room?.roomType})</span></td>
-                    <td className="px-5 py-4 text-slate-600 whitespace-nowrap">{b.checkInDate}</td>
-                    <td className="px-5 py-4 text-slate-600 whitespace-nowrap">{b.checkOutDate}</td>
+                    <td className="px-5 py-4 text-slate-600 whitespace-nowrap">{new Date(b.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                    <td className="px-5 py-4 text-slate-600 whitespace-nowrap">{new Date(b.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                     <td className="px-5 py-4 text-slate-600 text-center">{b.numberOfNights}</td>
                     <td className="px-5 py-4 font-semibold text-teal-600 whitespace-nowrap">${b.totalPrice?.toFixed(2)}</td>
                     <td className="px-5 py-4"><BookingStatusBadge status={b.status} /></td>

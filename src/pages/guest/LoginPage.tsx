@@ -18,12 +18,14 @@ export default function LoginPage() {
     try {
       const res = await login(form).unwrap();
       dispatch(setCredentials({ token: res.token, user: res.user }));
-      toast.success(`Welcome back, ${res.user.fullName.split(' ')[0]}!`);
+      const name = res.user?.fullName?.split(' ')[0] || 'User';
+      toast.success(`Welcome back, ${name}!`);
       if (res.user.userType === 'ADMIN') navigate('/admin');
       else if (res.user.userType === 'FRONT_DESK') navigate('/frontdesk');
       else navigate('/');
-    } catch {
-      toast.error('Invalid username or password');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      toast.error(err?.data?.message || 'Invalid username or password');
     }
   };
 
@@ -67,11 +69,22 @@ export default function LoginPage() {
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md animate-fade-in-up">
-          <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center">
-              <Hotel size={18} className="text-white" />
+          <div className="flex items-center justify-between mb-8 lg:hidden">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center">
+                <Hotel size={18} className="text-white" />
+              </div>
+              <span className="text-xl font-display font-bold text-slate-800">BookInn</span>
             </div>
-            <span className="text-xl font-display font-bold text-slate-800">BookInn</span>
+            <Link to="/" className="text-sm font-medium text-slate-500 hover:text-teal-600 transition-colors z-20">
+              Back to Home
+            </Link>
+          </div>
+
+          <div className="hidden lg:flex items-center justify-end mb-12">
+            <Link to="/" className="text-sm font-medium text-slate-500 hover:text-teal-600 transition-colors z-20">
+              Back to Home
+            </Link>
           </div>
 
           <h2 className="text-3xl font-display font-bold text-slate-800 mb-2">Welcome back</h2>

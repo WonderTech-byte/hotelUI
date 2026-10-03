@@ -100,50 +100,68 @@ export default function AdminRoomsPage() {
       ) : rooms.length === 0 ? (
         <div className="card p-12"><EmptyState title="No rooms yet" description="Add your first room to get started" icon={null} /></div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {rooms.map((room) => (
-            <div key={room.id} className="card overflow-hidden group">
-              <div className="relative h-44 overflow-hidden">
-                <img src={room.imageUrls[0] || PLACEHOLDER} alt={`Room ${room.roomNumber}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute top-3 left-3"><RoomStatusBadge status={room.status} /></div>
-                <div className="absolute top-3 right-3 bg-white/90 text-slate-700 text-xs font-bold px-2 py-1 rounded-lg">
-                  {room.roomType}
-                </div>
-                {/* Upload image button overlay */}
-                <label className="absolute bottom-3 right-3 bg-white/90 hover:bg-white cursor-pointer p-2 rounded-xl shadow transition-all opacity-0 group-hover:opacity-100">
-                  {uploadingId === room.id
-                    ? <Loader size={14} className="animate-spin text-teal-600" />
-                    : <Image size={14} className="text-slate-600" />}
-                  <input type="file" accept="image/*" className="hidden"
-                    onChange={(e) => e.target.files && handleImageUpload(room.id, e.target.files)} />
-                </label>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="font-semibold text-slate-800">Room {room.roomNumber}</h3>
-                    <p className="text-xs text-slate-400">{room.features.length} features · {room.imageUrls.length} images</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-teal-600">${room.price}</p>
-                    <p className="text-xs text-slate-400">{room.priceType === 'PER_NIGHT' ? '/night' : '/day'}</p>
-                  </div>
-                </div>
-                {room.description && <p className="text-xs text-slate-500 mb-3 line-clamp-2">{room.description}</p>}
-                <div className="flex gap-2 pt-3 border-t border-slate-100">
-                  <button onClick={() => openEdit(room)}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs font-medium text-slate-600 hover:text-teal-600 py-2 rounded-lg hover:bg-teal-50 transition-colors">
-                    <Pencil size={13} /> Edit
-                  </button>
-                  <button onClick={() => handleDelete(room.id)} disabled={deletingId === room.id}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs font-medium text-slate-600 hover:text-red-600 py-2 rounded-lg hover:bg-red-50 transition-colors">
-                    {deletingId === room.id ? <Loader size={13} className="animate-spin" /> : <Trash2 size={13} />} Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Room</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Images</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {rooms.map((room) => (
+                  <tr key={room.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                          <img src={room.imageUrls[0] || PLACEHOLDER} alt="" className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-800 text-sm">Room {room.roomNumber}</p>
+                          <p className="text-xs text-slate-400 truncate max-w-[200px]">{room.description || 'No description'}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600">{room.roomType}</td>
+                    <td className="px-6 py-4"><RoomStatusBadge status={room.status} /></td>
+                    <td className="px-6 py-4">
+                      <p className="font-medium text-slate-800 text-sm">${room.price}</p>
+                      <p className="text-[10px] text-slate-400">{room.priceType === 'PER_NIGHT' ? 'per night' : 'per day'}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-500">{room.imageUrls.length} imgs</span>
+                        <label className="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-50 hover:text-teal-600 cursor-pointer transition-colors">
+                          {uploadingId === room.id
+                            ? <Loader size={12} className="animate-spin" />
+                            : <Image size={12} />}
+                          <input type="file" accept="image/*" className="hidden"
+                            onChange={(e) => e.target.files && handleImageUpload(room.id, e.target.files)} />
+                        </label>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => openEdit(room)}
+                          className="p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors">
+                          <Pencil size={16} />
+                        </button>
+                        <button onClick={() => handleDelete(room.id)} disabled={deletingId === room.id}
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                          {deletingId === room.id ? <Loader size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

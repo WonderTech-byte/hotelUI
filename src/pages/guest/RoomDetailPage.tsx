@@ -30,20 +30,38 @@ export default function RoomDetailPage() {
 
   const handleBook = async () => {
     const token = localStorage.getItem('hms_token');
-    console.log('=== BOOKING DEBUG ===');
-    console.log('isAuthenticated:', isAuthenticated);
-    console.log('token in localStorage:', token);
-    console.log('checkIn:', checkIn, 'checkOut:', checkOut, 'nights:', nights);
-
+    
     if (!isAuthenticated) {
       toast.error('Please sign in to make a booking');
       navigate('/login');
       return;
     }
-    if (!checkIn || !checkOut || nights <= 0) {
-      toast.error('Please select valid check-in and check-out dates');
+
+    if (!checkIn) {
+      toast.error('Please select a check-in date');
       return;
     }
+
+    if (!checkOut) {
+      toast.error('Please select a check-out date');
+      return;
+    }
+
+    if (new Date(checkIn) < new Date(today)) {
+      toast.error('Check-in date cannot be in the past');
+      return;
+    }
+
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      toast.error('Check-out date must be after check-in date');
+      return;
+    }
+
+    if (nights <= 0) {
+      toast.error('Invalid booking duration');
+      return;
+    }
+
     try {
       const res = await createBooking({
         roomId: Number(id),
@@ -53,8 +71,7 @@ export default function RoomDetailPage() {
       }).unwrap();
       setConfirmed(res);
     } catch (err: any) {
-      console.log('=== BOOKING ERROR ===', err);
-      toast.error(err?.data?.message || `Failed: ${err?.status}`);
+      toast.error(err?.data?.message || `Failed to book: ${err?.status}`);
     }
   };
 
@@ -100,11 +117,11 @@ export default function RoomDetailPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Check-In</span>
-                <span className="font-medium">{confirmed.checkInDate}</span>
+                <span className="font-medium">{new Date(confirmed.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Check-Out</span>
-                <span className="font-medium">{confirmed.checkOutDate}</span>
+                <span className="font-medium">{new Date(confirmed.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Nights</span>

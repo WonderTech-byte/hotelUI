@@ -80,13 +80,13 @@ export default function MyBookingsPage() {
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Check-In</p>
                         <p className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                          <Calendar size={12} /> {booking.checkInDate}
+                          <Calendar size={12} /> {new Date(booking.checkInDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">Check-Out</p>
                         <p className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                          <Calendar size={12} /> {booking.checkOutDate}
+                          <Calendar size={12} /> {new Date(booking.checkOutDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                       <div>
